@@ -1,0 +1,11 @@
+[package]
+name = "koi"
+edition = "2024.beta"
+authors = ["Tirso J. Bello Ponce (tirso@blockus.gg)"]
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+
+[addresses]
+koi = "0x0"
+
