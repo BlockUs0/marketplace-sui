@@ -102,6 +102,7 @@ module koi::core {
         marketplace: &mut KoiMarketplace,
         ctx: &mut TxContext,
     ) {
+        assert!(marketplace.version == VERSION, EKoiMarketplaceVersionMismatch);
         let profits = koi::treasury::withdraw_profits(
             &mut marketplace.treasury,
             ctx,
@@ -133,6 +134,7 @@ module koi::core {
         marketplace: &KoiMarketplace,
         item_id: ID,
     ): (u64, u64, u64) {
+        assert!(marketplace.version == VERSION, EKoiMarketplaceVersionMismatch);
         assert!(kiosk.is_listed(item_id), ENotListed);
         
         let listing_price = listing_price<MarketType, T>(kiosk, item_id);
