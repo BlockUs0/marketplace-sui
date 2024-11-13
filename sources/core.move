@@ -60,8 +60,12 @@ module koi::core {
     ) {
         let treasury = koi::treasury::new();
 
-        // Default base_fee in 2%
-        let fee_structure = koi::fees::new(20_000_000);
+        // `base_fee_percentage` = 2.5% = 0.025 * 10^9 = 25_000_000
+        // `min_fee_amount` = 0.2 SUI = 0.2 * 10^9 = 200_000_000
+        let fee_structure = koi::fees::new(
+            25_000_000,
+            200_000_000,
+        );
     
         let cap = KoiMarketplaceOwnerCap {
             id: object::new(ctx),
@@ -84,9 +88,10 @@ module koi::core {
     public entry fun update_base_fee(
         _: &KoiMarketplaceOwnerCap,
         marketplace: &mut KoiMarketplace,
-        base_fee: u64,
+        base_fee_percentage: u64,
+        min_fee_amount: u64,
     ) {assert!(marketplace.version == VERSION, EKoiMarketplaceVersionMismatch);assert!(marketplace.version == VERSION, EKoiMarketplaceVersionMismatch);
-        let fee_structure = koi::fees::new(base_fee);
+        let fee_structure = koi::fees::new(base_fee_percentage, min_fee_amount);
         marketplace.fee_structure = fee_structure;
     }
 
