@@ -2,7 +2,6 @@
 // Author: Tirso J. Bello Ponce (tirso@blockus.gg)
 
 module koi::fees {
-    use std::debug;
     /// An object to store the fee structure to be apply on every
     /// sale inside the marketplace.
     /// This object is intended to be used inside `KoiMarketplace`
@@ -40,8 +39,6 @@ module koi::fees {
         let base_fee_percentage = fee_structure.base_fee_percentage;
         let min_fee_amount = fee_structure.min_fee_amount;
         let mut amount = (price * base_fee_percentage) / 1_000_000_000;
-
-        debug::print(&amount);
 
         // If the amount is less than the minimum, use the minimum
         if (amount < min_fee_amount) {

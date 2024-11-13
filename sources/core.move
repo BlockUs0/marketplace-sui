@@ -90,7 +90,8 @@ module koi::core {
         marketplace: &mut KoiMarketplace,
         base_fee_percentage: u64,
         min_fee_amount: u64,
-    ) {assert!(marketplace.version == VERSION, EKoiMarketplaceVersionMismatch);assert!(marketplace.version == VERSION, EKoiMarketplaceVersionMismatch);
+    ) {
+        assert!(marketplace.version == VERSION, EKoiMarketplaceVersionMismatch);
         let fee_structure = koi::fees::new(base_fee_percentage, min_fee_amount);
         marketplace.fee_structure = fee_structure;
     }
