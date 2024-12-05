@@ -242,6 +242,17 @@ module koi::core {
         let (item, req) = kiosk.purchase_with_cap(purchase_cap, payment);
     
         (item, req)
-    } 
+    }
+
+    public fun price<MarketType, T: key + store>(kiosk: &Kiosk, item_id: ID): u64 {
+        let KoiListing<MarketType, T> {
+            koi_purchase_cap,
+            listing_price: _,
+        } = koi::extension::storage(kiosk).borrow<ID, KoiListing<MarketType, T>>(item_id);
+
+        let price = koi_purchase_cap.purchase_cap.purchase_cap_min_price();
+
+        (price)
+    }
 
 }
