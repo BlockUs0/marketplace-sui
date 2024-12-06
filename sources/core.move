@@ -264,7 +264,7 @@ module koi::core {
             id: object::new(ctx),
             treasury,
             fee_structure,
-            version: 1,
+            version: VERSION,
         };
 
         (marketplace, cap)
