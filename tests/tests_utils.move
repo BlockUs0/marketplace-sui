@@ -27,6 +27,13 @@ module koi::test_utils {
     }
 
     public fun kiosk(_self: &TestRunner, ctx: &mut TxContext): (Kiosk, KioskOwnerCap, ID, Asset) {
+        let (kiosk, cap) = kiosk::new(ctx);
+        let (asset, asset_id) = test::get_asset(ctx);
+
+        (kiosk, cap, asset_id, asset)
+    }
+
+    public fun kiosk_with_extension(_self: &TestRunner, ctx: &mut TxContext): (Kiosk, KioskOwnerCap, ID, Asset) {
         let (mut kiosk, cap) = kiosk::new(ctx);
         let (asset, asset_id) = test::get_asset(ctx);
 
@@ -35,6 +42,21 @@ module koi::test_utils {
             &cap, 
             ctx,
         );
+        (kiosk, cap, asset_id, asset)
+    }
+
+    public fun kiosk_with_extension_disabled(_self: &TestRunner, ctx: &mut TxContext): (Kiosk, KioskOwnerCap, ID, Asset) {
+        let (mut kiosk, cap) = kiosk::new(ctx);
+        let (asset, asset_id) = test::get_asset(ctx);
+
+        koi::extension::add(
+            &mut kiosk, 
+            &cap, 
+            ctx,
+        );
+
+        koi::extension::disable(&mut kiosk, &cap);
+
         (kiosk, cap, asset_id, asset)
     }
 
