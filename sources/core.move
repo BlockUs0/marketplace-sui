@@ -66,18 +66,13 @@ module koi::core {
             25_000_000,
             200_000_000,
         );
-    
-        let cap = KoiMarketplaceOwnerCap {
-            id: object::new(ctx),
-        };
 
-        let marketplace = KoiMarketplace {
-            id: object::new(ctx),
+        let (marketplace, cap) = create_koi_marketplace(
             treasury,
             fee_structure,
-            version: 1,
-        };
-
+            ctx
+        );
+    
         transfer::public_share_object(marketplace);
         transfer::public_transfer(cap, ctx.sender());
     }
@@ -110,22 +105,6 @@ module koi::core {
         transfer::public_transfer(profits, ctx.sender());
     }
 
-    /// - PRIVATE METHODS -
-    
-    /// Easy accesor for the `listing_price` from an active listing.
-    /// Aborts with `ENotListed` if the listing doesn't exists.
-    fun listing_price<MarketType, T: key + store>(
-        kiosk: &Kiosk,
-        item_id: ID,
-    ): u64 {
-        assert!(kiosk.is_listed(item_id), ENotListed);
-        let listing = koi::extension::storage(kiosk).borrow<ID, KoiListing<MarketType, T>>(item_id);
-
-        (listing.listing_price)
-    }
-
-    /// - FRIEND METHODS -
-    
     /// Given a listing, calculates the fee to apply.
     /// Aborts with `ENotListed` if the listing doesn't exists.
     /// Can be dry runed to know the fee for the payment
@@ -149,6 +128,35 @@ module koi::core {
         (fee, listing_price, total_price)
     }
 
+    /// Given a listing, get the listing price without the fee.
+    /// Aborts with `ENotListed` if the listing doesn't exists.
+    public fun price<MarketType, T: key + store>(kiosk: &Kiosk, item_id: ID): u64 {
+        let KoiListing<MarketType, T> {
+            koi_purchase_cap,
+            listing_price: _,
+        } = koi::extension::storage(kiosk).borrow<ID, KoiListing<MarketType, T>>(item_id);
+
+        let price = koi_purchase_cap.purchase_cap.purchase_cap_min_price();
+
+        (price)
+    }
+
+    /// - PRIVATE METHODS -
+    
+    /// Easy accesor for the `listing_price` from an active listing.
+    /// Aborts with `ENotListed` if the listing doesn't exists.
+    fun listing_price<MarketType, T: key + store>(
+        kiosk: &Kiosk,
+        item_id: ID,
+    ): u64 {
+        assert!(kiosk.is_listed(item_id), ENotListed);
+        let listing = koi::extension::storage(kiosk).borrow<ID, KoiListing<MarketType, T>>(item_id);
+
+        (listing.listing_price)
+    }
+
+    /// - FRIEND METHODS -
+    
     /// List an item on the KoiMarketplace
     /// Once listed, the `PurchaseCap` is stored on the `Kiosk` extension
     /// This functionality required to have the `Kiosk` extension installed and enabled.
@@ -242,6 +250,23 @@ module koi::core {
         let (item, req) = kiosk.purchase_with_cap(purchase_cap, payment);
     
         (item, req)
-    } 
+    }
 
+    public(package) fun create_koi_marketplace(
+        treasury: koi::treasury::KoiMarketplaceTreasury,
+        fee_structure: koi::fees::KoiMarketplaceFeeStructure ,
+        ctx: &mut TxContext): (KoiMarketplace, KoiMarketplaceOwnerCap) {
+        let cap = KoiMarketplaceOwnerCap {
+            id: object::new(ctx),
+        };
+
+        let marketplace = KoiMarketplace {
+            id: object::new(ctx),
+            treasury,
+            fee_structure,
+            version: VERSION,
+        };
+
+        (marketplace, cap)
+    }
 }
