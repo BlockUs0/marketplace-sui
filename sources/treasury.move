@@ -44,4 +44,12 @@ module koi::treasury {
 
         (profits)
     }
+
+    public(package) fun profits(
+        treasury: & KoiMarketplaceTreasury,
+    ): u64 {
+        let amount = treasury.profits.value();
+
+        (amount)
+    }
 }
