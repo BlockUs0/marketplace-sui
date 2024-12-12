@@ -14,13 +14,11 @@ module koi::marketplace_fixed_trade {
 
     public struct KoiMarketplaceFixedTrade {}
 
-    /// List an item on the KoiMarketplace, this function creates a `Kiosk` and install the extension on it
-    public entry fun list<T: key + store>(
+    fun new_listing<T:key + store>(
         item: T, 
         listing_price: u64,
         ctx: &mut TxContext,
-    ) {
-        let item_id = object::id(&item);
+    ): (Kiosk, KioskOwnerCap) {
         let (mut kiosk, kiosk_owner_cap) = kiosk::new(ctx);
 
         koi::extension::add(
@@ -37,6 +35,19 @@ module koi::marketplace_fixed_trade {
             ctx,
         );
 
+        (kiosk, kiosk_owner_cap)
+    }
+
+    /// List an item on the KoiMarketplace, this function creates a `Kiosk` and install the extension on it
+    #[allow(lint(share_owned))]
+    public entry fun list<T: key + store>(
+        item: T, 
+        listing_price: u64,
+        ctx: &mut TxContext,
+    ) {
+        let item_id = object::id(&item);
+        let (kiosk, kiosk_owner_cap) = new_listing<T>(item, listing_price, ctx);
+    
         koi::events::emit_item_listed_event<KoiMarketplaceFixedTrade, T>(
             object::id(&kiosk),
             ctx.sender(),
@@ -101,5 +112,16 @@ module koi::marketplace_fixed_trade {
         );
 
         (item, transfer_request)
+    }
+
+    #[test_only]
+    public fun list_for_test<T: key + store>(
+        item: T, 
+        listing_price: u64,
+        ctx: &mut TxContext,
+    ): (Kiosk, KioskOwnerCap) {
+        let (kiosk, kiosk_owner_cap) = new_listing<T>(item, listing_price, ctx);
+
+        (kiosk, kiosk_owner_cap)
     }
 }

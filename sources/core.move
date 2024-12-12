@@ -77,6 +77,22 @@ module koi::core {
         transfer::public_transfer(cap, ctx.sender());
     }
 
+    #[test_only]
+    /// Wrapper of module initializer for testing
+    public fun test_init(ctx: &mut TxContext) {
+        init( ctx)
+    }
+
+
+    #[test_only]
+    /// Wrapper of module initializer for testing
+    public fun test_update_version(
+        marketplace: &mut KoiMarketplace,
+        version: u8
+    ) {
+        marketplace.version = version;
+    }
+
     /// - PUBLIC METHODS -
 
     /// Function to enable the owner of the marketplace to update the `base_fee` of the `fee_structure`
@@ -153,6 +169,14 @@ module koi::core {
         let listing = koi::extension::storage(kiosk).borrow<ID, KoiListing<MarketType, T>>(item_id);
 
         (listing.listing_price)
+    }
+
+    #[test_only]
+    public fun test_listing_price<MarketType, T: key + store>(
+        kiosk: &Kiosk,
+        item_id: ID,
+    ): u64 {
+        (listing_price<MarketType, T>(kiosk, item_id))
     }
 
     /// - FRIEND METHODS -
@@ -268,5 +292,21 @@ module koi::core {
         };
 
         (marketplace, cap)
+    }
+
+    public(package) fun base_fee_percentage(
+        marketplace: &KoiMarketplace,
+    ): u64 {
+        let fee = marketplace.fee_structure.base_fee_percentage();
+
+        (fee)
+    }
+
+    public(package) fun min_fee_amount(
+        marketplace: &KoiMarketplace,
+    ): u64 {
+        let fee = marketplace.fee_structure.min_fee_amount();
+
+        (fee)
     }
 }

@@ -18,7 +18,12 @@ module koi::extension {
 
     /// Adds the extension to the provided `Kiosk`
     public fun add(kiosk: &mut Kiosk, cap: &KioskOwnerCap, ctx: &mut TxContext) {
-        kiosk_extension::add(KoiKioskExtension {}, kiosk, cap, PERMISSIONS, ctx)
+        kiosk_extension::add(KoiKioskExtension {}, kiosk, cap, PERMISSIONS, ctx);
+    }
+
+    #[test_only]
+    public fun remove(kiosk: &mut Kiosk, cap: &KioskOwnerCap) {
+        kiosk_extension::remove<KoiKioskExtension>(kiosk, cap);
     }
 
     /// Enables the extension on the provided `Kiosk`
