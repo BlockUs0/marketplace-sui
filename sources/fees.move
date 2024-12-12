@@ -47,4 +47,16 @@ module koi::fees {
 
         (amount)
     }
+
+    public(package) fun base_fee_percentage(
+        fee_structure: &KoiMarketplaceFeeStructure,
+    ): u64 {
+        (fee_structure.base_fee_percentage)
+    }
+
+    public(package) fun min_fee_amount(
+        fee_structure: &KoiMarketplaceFeeStructure,
+    ): u64 {
+        (fee_structure.min_fee_amount)
+    }
 }
