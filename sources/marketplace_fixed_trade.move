@@ -114,6 +114,16 @@ module koi::marketplace_fixed_trade {
         (item, transfer_request)
     }
 
+    public fun calculate_fee<T: key + store>(
+        kiosk: &mut Kiosk,
+        marketplace: &mut koi::core::KoiMarketplace,
+        item_id: ID,
+    ): (u64, u64, u64) {
+        let (fee, listing_price, total_price) = koi::core::calculate_fee<KoiMarketplaceFixedTrade, T>(kiosk, marketplace, item_id);
+
+        (fee, listing_price, total_price)
+    }
+
     #[test_only]
     public fun list_for_test<T: key + store>(
         item: T, 
