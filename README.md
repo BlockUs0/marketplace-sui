@@ -1,6 +1,6 @@
 # Koi Marketplace Move Package Documentation :package:
 
-Author: @Tirso J. Bello Ponce (tirso@blockus.gg)
+Author: Tirso J. Bello Ponce (tirso@blockus.gg)
 
 # Useful resources
 
@@ -30,7 +30,7 @@ The diagram shows the relationship between the diferent modules of the project.
 
 - **module_koi_markeplace_fixed_trade:** Fixed trade implementation for purchases using module_koi_core features. This package will create and manage the kiosk in behalf of the user.
 - **module_koi_core:** Package to manage all the core implementations for the marketplace. Esentially manages the fee, treasury and offers utilities like list, delist and purchase. This module assumes that the user already has a kiosk and the extension is installed.
-- **module_koi_events:** On-chain events dispatcher**.**
+- **module_koi_events:** On-chain events dispatcher.
 - **module_koi_tresury:** Contains all the functionalities related to the treasury like collect and withdraw.
 - **module_koi_fees:** Package with a set of utilities to calculate the imposed fee on-chain during the purchase transaction. This module can also be updated on-chain so the owner can change the fee structure on demand.
 - **module_koi_kiosk_extension: A**llows other modules to install and manage the Koi marketplace kiosk extension to safely operate in the Koi marketplace.
